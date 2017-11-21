@@ -1,5 +1,4 @@
 
-// const db=require('./try').db;
 const Joi=require('joi');
 
 const db=require('monk')('mongodb://la1perry:wmdd4935@books-shard-00-00-bqgpw.mongodb.net:27017,books-shard-00-01-bqgpw.mongodb.net:27017,books-shard-00-02-bqgpw.mongodb.net:27017/test?ssl=true&replicaSet=books-shard-0&authSource=admin')
@@ -43,7 +42,6 @@ return reply (allBooks);
             await books.insert(newBook, (err,result)=>{
 if(err)throw err;
 return reply(newBook).code(201);
-
             })
         }
     },
@@ -56,10 +54,11 @@ handler: async (request,reply)=>{
     // const book=request.params.title
     const bookAdd=request.payload;
     await books.update({title:request.params.title},{bookAdd}, function(err,result){
-        if(err) throw err;
         return reply().code(204);
     })
-}}
+}
+    },
+
 //     await books.update({title:request.params.title},{bookAdd},function(err,result){
 // if(err)throw err;
 // return reply(books).code(201);
@@ -70,32 +69,33 @@ handler: async (request,reply)=>{
 // return reply(books).code(201);
     //  })
 // )}
-    ,
-
+    
     // updateone
     {
         method:'PATCH',
         path:'/books/{title}',
         handler: async(request,reply)=>{
             // const updateBook={$set:{}};
-            // const key=request.params.info;
-            // const obj=request.params.infoValue;
-            // const update={key:obj}
-
-            // const update=`${request.params.info}`:`${request.params.infoValue}`;
-            await books.findOneAndUpdate({title:request.params.title}, {$set:request.body}, function(err,result){
-                if(err) throw err;
+            // updateBook.$set[`${request.params.info}`]=request.params.infoValue;
+// let update={
+    // 'isbn':request.payload.isbn,
+    // 'title':request.payload.title,
+    //     'author':request.payload.author,
+// }
+// let key=request.payload.field;
+// let obj=request.payload.value;
+// let update={$set:{key:obj}};
+// const update=request.payload;
+            await books.findOneAndUpdate({title:request.params.title}, {$set:{}}, function(err,result){
                 return reply().code(204);
-            });
+            })
         }
     },
 
-
 // push
     // {
-
-        
     // },
+
 
     // delete
     {

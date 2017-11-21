@@ -8,8 +8,10 @@
 // })
 
 // exports.db=db;
-const MongoClient=require('mongodb').MongoClient;
-const uri="mongodb://la1perry:wmdd4935@books-shard-00-00-bqgpw.mongodb.net:27017,books-shard-00-01-bqgpw.mongodb.net:27017,books-shard-00-02-bqgpw.mongodb.net:27017/test?ssl=true&replicaSet=books-shard-0&authSource=admin"
+
+
+// const MongoClient=require('mongodb').MongoClient;
+// const uri="mongodb://la1perry:wmdd4935@books-shard-00-00-bqgpw.mongodb.net:27017,books-shard-00-01-bqgpw.mongodb.net:27017,books-shard-00-02-bqgpw.mongodb.net:27017/test?ssl=true&replicaSet=books-shard-0&authSource=admin"
 
 // MongoClient.connect(uri,function(err,db){
 //     db.collection('books').dropDatabase();});

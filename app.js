@@ -8,9 +8,9 @@
 // 'use strict';
 const Hapi=require('hapi');
 // var Vision=require('vision');
-const Path =require('path');
+// const Path =require('path');
 // const Inert=require('inert');
-const db=require('./try').db;
+
 
 
 const server= new Hapi.Server();
