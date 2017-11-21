@@ -86,7 +86,16 @@ handler: async (request,reply)=>{
 // let obj=request.payload.value;
 // let update={$set:{key:obj}};
 // const update=request.payload;
-            await books.findOneAndUpdate({title:request.params.title}, {$set:{}}, function(err,result){
+let reqPayload=context.getVariable('request.content');
+let title=reqPayload.hasOwnProperty('title');
+let isbn=reqPayload.hasOwnProperty('isbn');
+let author=reqPayload.hasOwnProperty('author');
+
+            await books.findOneAndUpdate({title:request.params.title}, {
+               if(isbn){$set:{isbn:request.payload.isbn}} ,
+               if(title){$set:{title:request.payload.title}} ,
+               if(author){$set:{author:request.payload.author}} 
+            }, function(err,result){
                 return reply().code(204);
             })
         }
