@@ -11,21 +11,22 @@
 const MongoClient=require('mongodb').MongoClient;
 const uri="mongodb://la1perry:wmdd4935@books-shard-00-00-bqgpw.mongodb.net:27017,books-shard-00-01-bqgpw.mongodb.net:27017,books-shard-00-02-bqgpw.mongodb.net:27017/test?ssl=true&replicaSet=books-shard-0&authSource=admin"
 
-MongoClient.connect(uri,function(err,db){
-    if(err){throw err}
-db.collection('books').insertOne({
-    isbn:"tf-458583",
-    title:"wuthering heights",
-        author:"emily bronte",
-        genre:"fiction",
-        published:"1992",
-        publisher:"Peguin Publishing",
-        copies:2,
-        available:0
-})
-// db.collection('books').deleteOne({copies:5})
-console.log('done');
-});
+// MongoClient.connect(uri,function(err,db){
+//     db.collection('books').dropDatabase();});
+//     if(err){throw err}
+// db.collection('books').insertOne({
+//     isbn:"tf-458583",
+//     title:"wuthering heights",
+//         author:"emily bronte",
+//         genre:"fiction", 
+//         published:"1992",
+//         publisher:"Peguin Publishing",
+//         copies:2,
+//         available:0
+// })
+// db.collection('books').deleteOne({_id:"5a0e533c5941827f897ddf82"})
+// console.log('done');
+// });
 
 
 
