@@ -56,6 +56,7 @@ handler: async (request,reply)=>{
     // const book=request.params.title
     const bookAdd=request.payload;
     await books.update({title:request.params.title},{bookAdd}, function(err,result){
+        if(err) throw err;
         return reply().code(204);
     })
 }}
@@ -76,9 +77,14 @@ handler: async (request,reply)=>{
         method:'PATCH',
         path:'/books/{title}',
         handler: async(request,reply)=>{
-            const updateBook={$set:{}};
-            updateBook.$set[`${request.params.info}`]=request.params.infoValue;
-            await books.update({title:request.params.title}, {updateBook}, function(err,result){
+            // const updateBook={$set:{}};
+            // const key=request.params.info;
+            // const obj=request.params.infoValue;
+            // const update={key:obj}
+
+            // const update=`${request.params.info}`:`${request.params.infoValue}`;
+            await books.findOneAndUpdate({title:request.params.title}, {$set:request.body}, function(err,result){
+                if(err) throw err;
                 return reply().code(204);
             });
         }
