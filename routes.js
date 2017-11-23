@@ -1,6 +1,5 @@
 
 const Joi=require('joi');
-const MongoQS=require('mongo-querystring');
 const db=require('monk')('mongodb://la1perry:wmdd4935@books-shard-00-00-bqgpw.mongodb.net:27017,books-shard-00-01-bqgpw.mongodb.net:27017,books-shard-00-02-bqgpw.mongodb.net:27017/test?ssl=true&replicaSet=books-shard-0&authSource=admin')
 const books=db.get('books');
 
@@ -30,7 +29,7 @@ return reply (allBooks);
         }
     },
 
-// find id
+// find title
     {
         method:'GET',
         path:'/books/{title}',
