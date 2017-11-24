@@ -3,8 +3,6 @@ const Joi=require('joi');
 const db=require('monk')('mongodb://la1perry:wmdd4935@books-shard-00-00-bqgpw.mongodb.net:27017,books-shard-00-01-bqgpw.mongodb.net:27017,books-shard-00-02-bqgpw.mongodb.net:27017/test?ssl=true&replicaSet=books-shard-0&authSource=admin')
 const books=db.get('books');
 
-const querystring=require('querystring');
-
 const bookSchema=Joi.object({
     isbn:Joi.string(),    
     title:Joi.string(),
@@ -63,7 +61,7 @@ return reply(newBook).code(201);
         }
     },
 
-// update
+// update**overwrites
     
     {
         method:'PUT',
@@ -115,18 +113,11 @@ return reply(newBook).code(201);
         },
 
         // changeonefield
-        {
-    method:'PATCH',
-    path:'/books/{title}',
-    handler: async (request,reply)=>{
-        // const book=request.params.title
-        // const bookAdd=request.payload;
-        await books.findOneAndModify({query:req.body.params},
-            {$set:{}}, function(err,result){
-
-            })
-    }
-        },
+    //     {
+    // method:'PATCH',
+    // path:'/books/{title}',
+    // handler: patchCheck
+    //     },
 
 {
     method:"SEARCH",
@@ -142,18 +133,85 @@ return reply(newBook).code(201);
 }
 ]
 
+
+
+
+
 async function queryCheck(request,reply){
-if(request.payload.author){
-    let auth=await books.find({author:request.payload.author})
-    if(Object.keys(auth).length !==0){
-        return reply(auth)
+    if(request.payload.author){
+        let auth=await books.find({author:request.payload.author})
+        if(Object.keys(auth).length !==0){
+            return reply(auth)
+        }
     }
-}
-if(request.payload.genre){
-    let gen=await books.find({genre:request.payload.genre})
-    if(Object.keys(gen).length !==0){
-        return reply(gen)
+    if(request.payload.genre){
+        let gen=await books.find({genre:request.payload.genre})
+        if(Object.keys(gen).length !==0){
+            return reply(gen)
+        }
     }
-}
-}
+    if(request.payload.keyword){
+        books.createIndex({"title":"text", "author":"text", "genre":"text"})
+        let keyword=request.payload.keyword
+    await books.find({$text:{$search: keyword}}).then((docs)=>{
+          return(docs)
+      })
+            // if(Object.keys(keyword).length!==0){
+            //     return reply(result)
+            // }
+        
+     
+    }
+    }
+
+
+
+
+    // in progress
+
+
+// async function patchCheck(request, reply){
+//     if(request.payload.author){
+//  await books.findOneAndUpdate({author:request.params.author},
+//     {$set:{"author.$":'request.payload.author'}},
+//     {"new":true,"upsert":false,passRawResult:false, "overwrite":false, setDefaultsOnInsert:true})
+//     .exec(function(err,result){
+//         return reply(result);
+//      })
+//     }
+//     if(request.payload.title){
+//         await books.findOneAndUpdate({title:request.params.title},
+//             {$set:{"title.$":'request.payload.author'}},
+//             {"new":true,"upsert":false,passRawResult:false, "overwrite":false, setDefaultsOnInsert:true})
+//             .exec(function(err,result){
+//                 return reply(result);
+//              })
+//     }
+//     if(request.payload.isbn){
+//         await books.findOneAndUpdate({isbn:request.params.isbn},
+//             {$set:{"isbn.$":'request.payload.author'}},
+//             {"new":true,"upsert":false,passRawResult:false, "overwrite":false, setDefaultsOnInsert:true})
+//             .exec(function(err,result){
+//                 return reply(result);
+//              })
+
+//     }
+//     if(request.payload.published){
+//         await books.findOneAndUpdate({published:request.params.published},
+//             {$set:{"published.$":'request.payload.author'}},
+//             {"new":true,"upsert":false,passRawResult:false, "overwrite":false, setDefaultsOnInsert:true})
+//             .exec(function(err,result){
+//                 return reply(result);
+//              })
+//     }
+//     if(request.payload.publisher){
+//         await books.findOneAndUpdate({publisher:request.params.publisher},
+//             {$set:{"publisher.$":'request.payload.author'}},
+//             {"new":true,"upsert":false,passRawResult:false, "overwrite":false, setDefaultsOnInsert:true})
+//             .exec(function(err,result){
+//                 return reply(result);
+//              })
+//     }
+// }
+
         
