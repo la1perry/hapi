@@ -2,6 +2,7 @@
 const Joi=require('joi');
 const db=require('monk')('mongodb://la1perry:wmdd4935@books-shard-00-00-bqgpw.mongodb.net:27017,books-shard-00-01-bqgpw.mongodb.net:27017,books-shard-00-02-bqgpw.mongodb.net:27017/test?ssl=true&replicaSet=books-shard-0&authSource=admin')
 const books=db.get('books');
+const querystring=require('querystring')
 
 const bookSchema=Joi.object({
     isbn:Joi.string(),    
@@ -17,6 +18,14 @@ const bookSchema=Joi.object({
 // })
 
 module.exports=[
+{method:"GET",
+path:"/",
+handler:(request,reply)=>{
+return reply("A Simple Book Lending API, /books")
+}
+
+},
+
     // list all
     {
         method:'GET',
@@ -86,7 +95,7 @@ return reply(newBook).code(201);
     validate:{
         payload:bookSchema,
         query:{
-            type:Joi.string()
+            type:Joi.alternatives().try(Joi.string(),Joi.number())
         } }
     
             }
@@ -106,7 +115,7 @@ return reply(newBook).code(201);
                 }
         },
             handler:async (request,reply)=>{
-    let remove=await books.remove({_id:request.params.id})
+    await books.remove({_id:request.params.id})
        return reply().code(204);     
     }
     
@@ -130,12 +139,24 @@ return reply(newBook).code(201);
         }
 },
     handler:queryCheck
-}
+// handler: async(request,reply)=>{
+//     books.createIndex({title:"text", author:"text", genre:"text"})
+//     let keyword=request.params.keyword           
+//          let searchres=   books.find({$text:{$search:request.params.keyword}})
+//             return reply(searchres)
+         // .then((docs)=>{
+            //     return reply(docs)
+                
+            // }).catch((e)=>{
+            //     throw err
+            // })
+// }
+    }
+
 ]
 
 
-
-
+// works for genre 
 
 async function queryCheck(request,reply){
     if(request.payload.author){
@@ -149,22 +170,90 @@ async function queryCheck(request,reply){
         if(Object.keys(gen).length !==0){
             return reply(gen)
         }
-    }
     if(request.payload.keyword){
-        books.createIndex({"title":"text", "author":"text", "genre":"text"})
-        let keyword=request.payload.keyword
-    await books.find({$text:{$search: keyword}}).then((docs)=>{
-          return(docs)
-      })
-            // if(Object.keys(keyword).length!==0){
-            //     return reply(result)
-            // }
+        let word= await books.find({title:/request.payload.keyword/})
+        return reply(word)
+    }
+
+    }}
+
+
+
+    async function queryCheck1(request,reply){
+        let qs=querystring.parse(req.url.split('?')[1])
+        let value=Object.values(qs)[0]
+        let key=Object.keys(qs)[0]
         
+        if(key.indexOf('author')>0){
+            let auth=await books.find({"key":"value"})
+                return reply(auth)
+            
+        }
+        if(key.indexOf('gen')>0){
+            let genre=await books.find({"key":"value"})
+                return reply(genre)
+            
+        }
+        if(key.indexOf('keyword')>0){
+            let word=await books.find({title:/term/})
+                return reply(word)
+            
+        }
+    }
+
+// async function queryCheck(request,reply){
+//     let keyword=request.params.keyword
+   
+// let genre=await books.find({genre:"/keyword/"}) 
+// return reply(genre)
+
+// let auth= await books.find({author:"/keyword/"})
+// return reply(auth)
+
+// let title=await books.find({title:"/keyword/"})  
+// return reply(title)
+
+// }
+
+
+
+
+
+
+
+//    if(request.payload.keyword){
+//        let searchTerm=request.payload.keyword
+//       let searchRes= await books.find({"title":/searchTerm/},(err,result)=>{
+//            res+=result;
+//            return reply(searchRes)
+//        })
+   
+//    }
+
+    // return new Promise((resolve, reject)=>{
+    // if(err)throw err;
+    // resolve()
+    // })
+
+//      .exec(function(err,result){
+//          if(err)throw err
+// return reply(result)
+//         })
+//         .catch((e)=>{
+//             return(e)
+//         })
+ 
+        
+    // let SearchRes=await books.find({$text:{$search: keyword}}).then((docs)=>{
+    //       return(docs)
+    //   })
+    //   .catch((err)=>{
+    //       throw err
+    //   })
      
-    }
-    }
+   
 
-
+ 
 
 
     // in progress
