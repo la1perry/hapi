@@ -139,24 +139,13 @@ return reply(newBook).code(201);
         }
 },
     handler:queryCheck
-// handler: async(request,reply)=>{
-//     books.createIndex({title:"text", author:"text", genre:"text"})
-//     let keyword=request.params.keyword           
-//          let searchres=   books.find({$text:{$search:request.params.keyword}})
-//             return reply(searchres)
-         // .then((docs)=>{
-            //     return reply(docs)
-                
-            // }).catch((e)=>{
-            //     throw err
-            // })
-// }
+
     }
 
 ]
 
 
-// works for genre 
+// works for genre  and author, still working on keyword
 
 async function queryCheck(request,reply){
     if(request.payload.author){
@@ -170,36 +159,72 @@ async function queryCheck(request,reply){
         if(Object.keys(gen).length !==0){
             return reply(gen)
         }
+    }
     if(request.payload.keyword){
-        let word= await books.find({title:/request.payload.keyword/})
-        return reply(word)
+   books.createIndex('title').then((err,result)=>{
+     let query=request.payload.keyword
+   books.find({$text:{$search:'request.payload.keyword'}},(err,result)=>{
+          return reply(result)
+      })
+   }).catch((err)=>{
+       throw err
+   })
+       
     }
+}
+    
 
-    }}
 
+// books.createIndex({title:'text'})
+// await books.find({$text:{$search:request.payload.keyword}}, (err,result)=>{
+//     return reply(result)
+// })
+// 
+    // let query=request.payload.keyword;
 
+    // books.find({$where:"title.indexOf('query')>=0"}, (err,result)=>{
+    //     return reply(result)
+    // }
+    
+    // )
 
-    async function queryCheck1(request,reply){
-        let qs=querystring.parse(req.url.split('?')[1])
-        let value=Object.values(qs)[0]
-        let key=Object.keys(qs)[0]
+// await books.find({$text:{$search:'request.payload.keyword'}}, (err,result)=>{
+//     return reply(result)
+// })
+
+    //     let query={
+    //         title:{$regex:request.payload.keyword}
+    //     }
+    //     await books.find({query}, function(err,result){
+    //         return reply(result)
+    //     })
         
-        if(key.indexOf('author')>0){
-            let auth=await books.find({"key":"value"})
-                return reply(auth)
+    // }
+
+
+// trying to get querystring working, but when I use in httpie it throws error saying my params aren't allowed
+
+    // async function queryCheck1(request,reply){
+    //     let qs=querystring.parse(req.url.split('?')[1])
+    //     let value=Object.values(qs)[0]
+    //     let key=Object.keys(qs)[0]
+        
+    //     if(key.indexOf('author')>0){
+    //         let auth=await books.find({"key":"value"})
+    //             return reply(auth)
             
-        }
-        if(key.indexOf('gen')>0){
-            let genre=await books.find({"key":"value"})
-                return reply(genre)
+    //     }
+    //     if(key.indexOf('gen')>0){
+    //         let genre=await books.find({"key":"value"})
+    //             return reply(genre)
             
-        }
-        if(key.indexOf('keyword')>0){
-            let word=await books.find({title:/term/})
-                return reply(word)
+    //     }
+    //     if(key.indexOf('keyword')>0){
+    //         let word=await books.find({title:/term/})
+    //             return reply(word)
             
-        }
-    }
+    //     }
+    // }
 
 // async function queryCheck(request,reply){
 //     let keyword=request.params.keyword
@@ -219,6 +244,18 @@ async function queryCheck(request,reply){
 
 
 
+// handler: async(request,reply)=>{
+//     books.createIndex({title:"text", author:"text", genre:"text"})
+//     let keyword=request.params.keyword           
+//          let searchres=   books.find({$text:{$search:request.params.keyword}})
+//             return reply(searchres)
+         // .then((docs)=>{
+            //     return reply(docs)
+                
+            // }).catch((e)=>{
+            //     throw err
+            // })
+// }
 
 
 //    if(request.payload.keyword){
@@ -302,5 +339,3 @@ async function queryCheck(request,reply){
 //              })
 //     }
 // }
-
-        
