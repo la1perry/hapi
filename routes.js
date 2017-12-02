@@ -2,7 +2,6 @@
 const Joi=require('joi');
 const db=require('monk')('mongodb://la1perry:wmdd4935@books-shard-00-00-bqgpw.mongodb.net:27017,books-shard-00-01-bqgpw.mongodb.net:27017,books-shard-00-02-bqgpw.mongodb.net:27017/test?ssl=true&replicaSet=books-shard-0&authSource=admin')
 const books=db.get('books');
-const querystring=require('querystring')
 
 const borrowSchema=Joi.object({
 name1:Joi.string(),
@@ -10,7 +9,6 @@ name2:Joi.string(),
 name3:Joi.string(),
 name4:Joi.string(),
 name5:Joi.string()
-
 })
 
 const copySchema= Joi.object({
@@ -19,20 +17,19 @@ const copySchema= Joi.object({
 })
 
 const bookSchema=Joi.object({
-    _id:Joi.number(),
+    // _id:Joi.string(),
     isbn:Joi.string(),    
     title:Joi.string(),
     author:Joi.string(),
-    datePublished: Joi.number(),
+    published: Joi.number(),
     publisher:Joi.string(),
     genre:Joi.string(),
     copies:copySchema,
     borrowers:borrowSchema
-  
 })
-// const titleSchema=Joi.object({
-//     title:Joi.string().required()
-// })
+
+
+
 
 module.exports=[
 
@@ -101,7 +98,7 @@ return reply(newBook).code(201);
 
                 await books.findOneAndUpdate({title:request.params.title}, {$set:
                     {
-        _id:request.payload.id,
+        // _id:request.payload.id,
         isbn:request.payload.isbn,
         title:request.payload.title,
         author:request.payload.author,
@@ -118,7 +115,7 @@ return reply(newBook).code(201);
     validate:{
         payload:bookSchema,
         query:{
-            type:Joi.alternatives().try(Joi.string(),Joi.number())
+            type:Joi.string()
         } }
             }
         },
@@ -131,7 +128,7 @@ return reply(newBook).code(201);
             config:{
                 validate:{
                     query:{
-                       type:Joi.number()
+                       type:Joi.string()
                     }
                 }
         },
@@ -142,7 +139,7 @@ return reply(newBook).code(201);
     
         },
 
-        // changeonefield
+        // changeONEfield
         {
     method:'PATCH',
     path:'/books/{title}',
@@ -172,6 +169,9 @@ handler: patchCheck
     handler:queryCheck
 
     },
+
+    // push ONE new field
+
     {
         method:"POST",
         path:'/books/{title}',
@@ -225,12 +225,13 @@ return reply(docs[i])
 
 
 // update ONE existing field
+
 async function patchCheck(request,reply){
 
-    if(request.payload.id){
-        await books.findOneAndUpdate({title:request.params.title},{$set:{_id:request.payload.id}},(err,result)=>{
-            return reply(result)
-        })}
+    // if(request.payload.id){
+    //     await books.findOneAndUpdate({title:request.params.title},{$set:{"_id":request.payload.id}},(err,result)=>{
+    //         return reply(result)
+    //     })}
 if(request.payload.title){
     await books.findOneAndUpdate({title:request.params.title},{$set:{title:request.payload.title}},(err,result)=>{
         return reply(result)
@@ -306,221 +307,3 @@ if(request.payload.copies){
      }) }
 
 }
-
-// let data=request.payload
-// let update=await books.find({title:request.params.title})
-// if(request.payload.author){
-//     update.author=request.payload.author
-
-// }
-// console.log(update)
-
-// function update(data){
-//     if(request.payload.author){
-//         data.author=request.payload.author
-//         return reply(data)
-//     }
-//     if(request.payload.isbn){
-//         data.isbn=request.payload.isbn
-//         return reply(data)
-//     }
-//     if(request.payload.publisher){
-//         data.publisher=request.payload.publisher
-//         return reply(data)
-//     }
-//     if(request.payload.published){
-//         data.published=request.payload.published
-//         return reply(data)
-//     }
-//     if(request.payload.genre){
-//         data.genre=request.payload.genre
-//         return reply(data)
-//     }   
-// }
-  
-// await books.findOneAndUpdate({title:request.params.title},{$set:{data}},(err,res)=>{
-//     return reply(res)
-// })
-
-// async function check(){
-// if(request.payload.author){
-//     data.author=request.payload.author
-//     return reply({$set:{data}})
-// }
-// if(request.payload.isbn){
-//     data.isbn=request.payload.isbn
-//     return reply(data)
-// }
-// if(request.payload.publisher){
-//     data.publisher=request.payload.publisher
-//     return reply(data)
-// }
-// if(request.payload.published){
-//     data.published=request.payload.published
-//     return reply(data)
-// }
-// if(request.payload.genre){
-//     data.genre=request.payload.genre
-//     return reply(data)
-// }
-// }
-
-//    books.index('title').then((err,result)=>{
-    //  let searchquery=new RegExp(request.payload.keyword);
-    // let query=`${request.payload.keyword}`;
-//    books.find({$text:{$search:"query"}},(err,result)=>{
-//           return reply(result)
-//       })
-//    }).catch((err)=>{
-//        throw err
-//    })
-// let query=request.payload.keyword
-//     let keyword=await books.find({title:{$regex:/request.payload.keyword/}})
-//     if(Object.keys(keyword).length!==0){
-// return reply(keyword)
-//     }
-
-
-// async function queryCheck2(){
-//     if(request.params.keyword){
-//         let qs=querystring.parse(req.url.split('?')[1])
-//             let value=Object.values(qs)[0]
-//             let key=Object.keys(qs)[0]
-//     let keyword=await books.find({title:/key/})
-//     }
-// }
-
-
-// books.createIndex({title:'text'})
-// await books.find({$text:{$search:request.payload.keyword}}, (err,result)=>{
-//     return reply(result)
-// })
-// 
-    // let query=request.payload.keyword;
-
-    // books.find({$where:"title.indexOf('query')>=0"}, (err,result)=>{
-    //     return reply(result)
-    // }
-    
-    // )
-
-
-
-    //     let query={
-    //         title:{$regex:request.payload.keyword}
-    //     }
-    //     await books.find({query}, function(err,result){
-    //         return reply(result)
-    //     })
-        
-    // }
-
-
-// trying to get querystring working, but when I use in httpie it throws error saying my params aren't allowed
-
-    // async function queryCheck1(request,reply){
-    //     let qs=querystring.parse(req.url.split('?')[1])
-    //     let value=Object.values(qs)[0]
-    //     let key=Object.keys(qs)[0]
-        
-    //     if(key.indexOf('author')>0){
-    //         let auth=await books.find({"key":"value"})
-    //             return reply(auth)
-            
-    //     }
-    //     if(key.indexOf('gen')>0){
-    //         let genre=await books.find({"key":"value"})
-    //             return reply(genre)
-            
-    //     }
-    //     if(key.indexOf('keyword')>0){
-    //         let word=await books.find({title:/term/})
-    //             return reply(word)
-            
-    //     }
-    // }
-
-// async function queryCheck(request,reply){
-//     let keyword=request.params.keyword
-   
-// let genre=await books.find({genre:"/keyword/"}) 
-// return reply(genre)
-
-// let auth= await books.find({author:"/keyword/"})
-// return reply(auth)
-
-// let title=await books.find({title:"/keyword/"})  
-// return reply(title)
-
-// }
-
-
-
-
-
-// handler: async(request,reply)=>{
-//     books.createIndex({title:"text", author:"text", genre:"text"})
-//     let keyword=request.params.keyword           
-//          let searchres=   books.find({$text:{$search:request.params.keyword}})
-//             return reply(searchres)
-         // .then((docs)=>{
-            //     return reply(docs)
-                
-            // }).catch((e)=>{
-            //     throw err
-            // })
-// }
-
-
-
-
-
- 
-
-
-    // in progress
-
-
-// async function patchCheck(request, reply){
-//     if(request.payload.author){
-//  await books.findOneAndUpdate({author:request.params.author},
-//     {$set:{"author.$":'request.payload.author'}},
-//     {"new":true,"upsert":false,passRawResult:false, "overwrite":false, setDefaultsOnInsert:true})
-//     .exec(function(err,result){
-//         return reply(result);
-//      })
-//     }
-//     if(request.payload.title){
-//         await books.findOneAndUpdate({title:request.params.title},
-//             {$set:{"title.$":'request.payload.author'}},
-//             {"new":true,"upsert":false,passRawResult:false, "overwrite":false, setDefaultsOnInsert:true})
-//             .exec(function(err,result){
-//                 return reply(result);
-//              })
-//     }
-//     if(request.payload.isbn){
-//         await books.findOneAndUpdate({isbn:request.params.isbn},
-//             {$set:{"isbn.$":'request.payload.author'}},
-//             {"new":true,"upsert":false,passRawResult:false, "overwrite":false, setDefaultsOnInsert:true})
-//             .exec(function(err,result){
-//                 return reply(result);
-//              })
-
-//     }
-//     if(request.payload.published){
-//         await books.findOneAndUpdate({published:request.params.published},
-//             {$set:{"published.$":'request.payload.author'}},
-//             {"new":true,"upsert":false,passRawResult:false, "overwrite":false, setDefaultsOnInsert:true})
-//             .exec(function(err,result){
-//                 return reply(result);
-//              })
-//     }
-//     if(request.payload.publisher){
-//         await books.findOneAndUpdate({publisher:request.params.publisher},
-//             {$set:{"publisher.$":'request.payload.author'}},
-//             {"new":true,"upsert":false,passRawResult:false, "overwrite":false, setDefaultsOnInsert:true})
-//             .exec(function(err,result){
-//                 return reply(result);
-//              })
-//     }
-// }

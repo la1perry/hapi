@@ -2,7 +2,7 @@
   "name": "hapi-test",
   "version": "1.0.0",
   "description": "",
-  "main": "hapi-test.js",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -12,8 +12,7 @@
   "dependencies": {
     "hapi": "^16.6.2",
     "joi": "^13.0.2",
-    "monk": "^6.0.5",
-    "vision": "^4.1.1"
+    "monk": "^6.0.5"
   },
   "devDependencies": {}
 }
