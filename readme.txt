@@ -5,7 +5,7 @@ To Run:
 - I use vscode and from integrated terminal run node app.js
 - once console says 'running at...' type control+z, then type bg and enter
 - Now the api can be tested with HTTPIE
-- too see all contents go to localhost:8000/books
+- too see all contents in browser go to localhost:8000/books
 
 In the terminal
 
