@@ -10,7 +10,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "ejs": "^2.5.7",
     "hapi": "^16.6.2",
     "joi": "^13.0.2",
     "monk": "^6.0.5",
